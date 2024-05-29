@@ -45,7 +45,7 @@
                             <td class="im_preview">@if($value->screen_shot)<img  src="{{url('assets/transaction',$value->screen_shot)}}" height="75" width="75">@endif</td>
                             <td>
                                 <div class="d-flex">
-                                @if($value->deposit_status == 'Pending')
+                                @if($value->status == 'Pending')
                                 <form method="post" action="{{route('admin.fund-request.store')}}">
                                     @csrf
                                     <input type="hidden" name="id" value="{{$value->id}}">
@@ -56,14 +56,14 @@
                                     <input type="hidden" name="id" value="{{$value->id}}">
                                     <input class="btn btn-xs btn-dark" type="submit" name="status" value="Reject">
                                 </form>
-                                @else
-                                <input type="button" class="btn btn-xs @if($value->deposit_status == 'Reject')btn-danger @else btn-info @endif" name="" value="{{($value->deposit_status == 'Reject')?'Rejected':'Approved'}}">
-                                @endif
-                                <form method="post" action="{{route('admin.fund-request.destroy',$value->id)}}" onsubmit="return confirm('Are you sure');">
+                                {{-- <form method="post" action="{{route('admin.fund-request.destroy',$value->id)}}" onsubmit="return confirm('Are you sure');">
                                     @csrf
                                     @method('DELETE')
                                     <input class="btn btn-xs btn-danger" type="submit" name="astatus" value="Delete">
-                                </form>
+                                </form> --}}
+                                @else
+                                <input type="button" class="btn btn-xs @if($value->status == 'REJECTED')btn-danger @else btn-info @endif" name="" value="{{$value->status}}">
+                                @endif
                             </div>
 
                             </td>

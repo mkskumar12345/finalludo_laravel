@@ -15,16 +15,19 @@
                    <div class="gap-3">
                       <h5 class="text-capitalize">upload result</h5>
                       <form action="" id="post-result" enctype="multipart/form-data">
-                        @csrf
-                      <input type="file" value="" hidden="">
-                      <input type="hidden" value="winner"  name="result" hidden="">
-                      <input type="hidden" value="{{$gameChallange->slug}}"  name="challange_id" hidden="">
-                      <div class="btn btn-primary btn-lg  fileUpload" style="width: 100%;">
-                        <input type="file" class="upload" id="upload_sreenshot" name="image" accept="image/*">
-                        <span>Upload Image</span>
-                    </div>
-                      <button type="submit"  class="btn btn-success btn-lg mt-1 post_btn" style="width: 100%;">Post Result</button>
-                    </form>
+                            @csrf
+                            <input type="file" value="" hidden="">
+                            <input type="hidden" value="winner" name="result" hidden="">
+                            <input type="hidden" value="{{$gameChallange->slug}}" name="challange_id" hidden="">
+                            <div class="btn btn-primary btn-lg fileUpload" style="width: 100%;">
+                                <input type="file" class="upload" id="upload_screenshot" name="image" accept="image/*">
+                                <span>Upload Image</span>
+                            </div>
+                            <div style="text-align:-webkit-center"> 
+                                <img id="image_preview" src="" alt="Image Preview" style="display: none; width: 200px; margin-top: 10px;" />
+                            </div>
+                            <button type="submit" class="btn btn-success btn-lg mt-1 post_btn" style="width: 100%;">Post Result</button>
+                        </form>
                    </div>
                 </div>
              </div>

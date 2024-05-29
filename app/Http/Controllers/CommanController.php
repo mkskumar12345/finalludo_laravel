@@ -335,8 +335,11 @@ class CommanController extends Controller
         $GameChallange = GameChallange::where('slug', $request->challagne_slug)->first();
 
         if (empty($GameChallange)) {
-            return response()->json(['status' => false, 'message' => 'Something went wrong']);
+            return response()->json(['status' => false, 'message' => 'No game with this id please reload and retry']);
         }
+        if($GameChallange->status != 'running'){//in_review
+			return response()->json(['status' => false, 'message' => 'Challange already ended. Start New Game']);
+		}
 
         $GameChallange->room_code = $request->room_code;
         $GameChallange->room_code_time = Carbon::now();

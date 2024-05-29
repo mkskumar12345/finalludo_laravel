@@ -28,17 +28,19 @@ class FundRequestController extends Controller
             DB::beginTransaction();
 
             $tranction = Transaction::where('id',$request->id)->first();
-            $tranction->deposit_status = $request->status;
-            $tranction->save();
-            if($request->status == 'Accepted')
-            {
-                User::where('id',$tranction->user_id)->increment('deposit_amount',$tranction->amount);
-            }else{
-                $tranction->delete();
+
+            if ($request->status == 'Accepted') {
+                $tranction->status = "SUCCESS";
+                User::where('id', $tranction->user_id)
+                    ->increment('wallet', $tranction->amount); 
+            } else {
+                $tranction->status = "REJECTED";
+                // $tranction->delete();
             }
+            $tranction->save();
 
             DB::commit();
-            $msg = 'Amount '.$request->astatus.' successfully';
+            $msg = 'Amount '.$request->status.' successfully';
             return redirect()->route('admin.fund-request.index')->with('msg',$msg);
         } catch (Exception $e) {
             DB::rollBack();

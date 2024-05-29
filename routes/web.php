@@ -65,11 +65,14 @@ Route::group(['middleware' => ['auth','CheckDeposit']], function () {
     Route::get('/game-history', 'AuthController@transactionHistory');
     Route::get('/transaction-history', 'AuthController@transactionHistoryNew');
     Route::get('/add-fund', 'AuthController@addFund');
+    Route::get('/add-fund-manual', 'AuthController@addFundManual');
+    Route::post('/add-money-manual', 'AuthController@addMoajaxAddFundManualney');
     Route::get('/withdraw-funds', 'AuthController@withdrawFunds');
     Route::get('/withdraw-funds-live', 'AuthController@withdrawFundsLive');
     Route::get('/game-details/{id}', 'AuthController@showGame');
     Route::get('/refer-earn', 'AuthController@referEarn');
     Route::get('/game-history2', 'AuthController@gameHistory');
+    Route::get('/manual-transaction-history', 'AuthController@manualTransactionHistory');
     Route::get('/notification', 'AuthController@notification');
     Route::POST('/add-withdrawal', 'AuthController@addWithdrawal');
     Route::POST('/add-withdrawal-live', 'AuthController@addWithdrawalLive');

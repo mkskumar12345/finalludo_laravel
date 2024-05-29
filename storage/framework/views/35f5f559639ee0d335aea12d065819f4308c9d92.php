@@ -9,6 +9,8 @@
         <?php echo e(isset($settingData['site_title']) && !empty($settingData['site_title']) ? $settingData['site_title'] : 'Ludo'); ?>
 
     </title>
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,600,700,800,900">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="<?php echo e(url('assets/front/css/bootstrap.css')); ?>" rel="stylesheet">
@@ -900,6 +902,40 @@
                 .fail(function(jqXHR, ajaxOptions, thrownError) {
                     toastr.error('Something went wrong!');
                 });
+        });
+
+        // add money manual
+        $('#addManualMoneyForm').on('submit', function (e) {
+            e.preventDefault(); // Prevent the form from submitting via the browser
+
+            var formData = new FormData(this); // Create a FormData object from the form
+
+            $.ajax({
+                url: "<?php echo e(url('add-money-manual')); ?>", // The URL to submit the form data to
+                type: 'POST',
+                data: formData,
+                contentType: false, // Tell jQuery not to set any content type header
+                processData: false, // Tell jQuery not to process the data
+                headers: {
+                    "X-CSRF-Token": $('meta[name="csrf-token"]').attr("content")
+                },
+                success: function (response) {
+                    console.log("-response",response)
+                    // Handle successful response
+                    // alert('Form submitted successfully!');
+                    $('#addManualMoneyForm')[0].reset();
+                    Swal.fire(
+                        'Data saved Successful lets wait once admin approve then wallet will be updated!',
+                        "You're money richer shortly",
+                        'success'
+                    )
+                },
+                error: function (xhr, status, error) {
+                    // Handle errors
+                    // alert('An error occurred: ' + error);
+                    toastr.error('An error occurred');
+                }
+            });
         });
 
         //betting js

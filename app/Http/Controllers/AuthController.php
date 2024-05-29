@@ -15,9 +15,11 @@ use App\Income;
 use App\SiteSetting;
 use App\KycDocument;
 use App\Helper\Helper;
+use App\Helper\ResponseBuilder;
 use Auth;
 use Hash;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Client;
 
@@ -363,6 +365,11 @@ class AuthController extends Controller
         $transaction = Transaction::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(30);
         return view('frontend.transaction-history', compact('transaction'));
     }
+    public function manualTransactionHistory(Request $request)
+    {
+        $transaction = Transaction::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(30);
+        return view('frontend.manual-transaction-history', compact('transaction'));
+    }
     public function transactionHistoryNew(Request $request)
     {
         $transaction = DepositTransactions::where('user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(30);
@@ -417,6 +424,53 @@ class AuthController extends Controller
         //     }
         // }
         return view('frontend.add-fund');
+    }
+
+    public function addFundManual(Request $request){
+        return view('frontend.add-fund-manual');
+    }
+     
+    public function addMoajaxAddFundManualney(Request $request)
+    {
+        // echo "test";
+        // print_r($request->all());die;
+        $user_id = Auth::user()->id;
+        $validator = Validator::make($request->all(), [
+            'amount'            => 'required|numeric|min:10',
+            'transactions_id'   => 'required',
+            'screen_shot'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            // 'status'            => 'required',
+            // 'transaction_type'  => 'required',
+            // 'payment_gatway'    => 'required'
+        ]);
+       
+        if ($validator->fails()) {
+            return ResponseBuilder::error($validator->errors()->first(), $this->badRequest);
+        }
+
+         try {
+            DB::beginTransaction();
+             $transaction = new Transaction();
+             $transaction->user_id  = $user_id;
+             $transaction->amount  = $request->amount;
+             $transaction->transactions_id  = $request->transactions_id;
+             if($request->has('screen_shot'))
+             {
+                $transaction->screen_shot  = $this->transactionScreenShort($request->screen_shot);
+             }
+             $transaction->status  = "Pending";
+             $transaction->addition_status = 'Pending';
+             $transaction->transaction_type  = 'add_money';
+             $transaction->payment_gatway  = 'Manual';
+             $transaction->save();
+          
+             DB::commit();
+             return ResponseBuilder::successMessage('Transaction data saved successfully',$this->success);
+         } catch (Exception $e) {
+            DB::rollBack();
+            return ResponseBuilder::error($e->getMessage(), $this->serverError);
+         }
+
     }
     public function withdrawFunds(Request $request)
     {
@@ -473,9 +527,9 @@ class AuthController extends Controller
     }
     public function gameHistory(Request $request)
     {
-
         return view('frontend.game-history');
     }
+    
     public function pusher(Request $request)
     {
 

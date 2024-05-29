@@ -144,25 +144,9 @@ class GameChallangeApiController extends Controller
         if ($validator->fails()) {
             return response()->json(['status' => false, 'message' => $validator->errors()->first() , 'data' => null]);
         }
-        $challenges = GameChallange::whereIn('status', ['accepted','challange_created','in_review'])
-            ->where(function ($query) use($user_id){
-                $query->where('challenge_created_by',$user_id)
-                ->orWhere('challenge_accepted_by',$user_id);
-            })
-            ->get();
-        // mk
-        // if(count($challenges)>0)
-        // {
-        //     return response()->json(['status' => false, 'message' => 'Please wait until your previous challenge is not completed' , 'data' => null]);
-        // }
 
         if(!isset($request->id))
         {
-            // mk
-            // if(count($challenges)>0)
-            // {
-            //     return response()->json(['status' => false, 'message' => 'Please wait until your previous challenge is not completed' , 'data' => null]);
-            // }
             if($request->amount  > ($user->wallet + $user->deposit_amount))
             {
               return response()->json(['status' => false, 'message' => 'Insufficient balance' , 'data' => null]);
@@ -981,6 +965,7 @@ class GameChallangeApiController extends Controller
                     $referUser = User::where('id',$ReferUsers->refer_by)->first();
                     if(!empty($referUser)){
                         $referUser->increment('wallet',$referAmount);
+                        // $referUser->increment('withdrawal_balance',$referAmount); //TODO : new work
                         $referUser->save();
                         $transaction2 = new Transaction;
                         $transaction2->amount = $referAmount;
